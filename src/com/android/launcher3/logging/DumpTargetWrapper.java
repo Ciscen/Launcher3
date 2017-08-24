@@ -21,11 +21,11 @@ import android.text.TextUtils;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.model.nano.LauncherDumpProto;
-import com.android.launcher3.model.nano.LauncherDumpProto.ContainerType;
-import com.android.launcher3.model.nano.LauncherDumpProto.DumpTarget;
-import com.android.launcher3.model.nano.LauncherDumpProto.ItemType;
-import com.android.launcher3.model.nano.LauncherDumpProto.UserType;
+import com.android.launcher3.model.LauncherDumpProto;
+import com.android.launcher3.model.LauncherDumpProto.ContainerType;
+import com.android.launcher3.model.LauncherDumpProto.DumpTarget;
+import com.android.launcher3.model.LauncherDumpProto.ItemType;
+import com.android.launcher3.model.LauncherDumpProto.UserType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,13 +63,14 @@ public class DumpTargetWrapper {
         ArrayList<DumpTarget> list = new ArrayList<>();
         list.add(node);
         if (!children.isEmpty()) {
-            for(DumpTargetWrapper t: children) {
+            for (DumpTargetWrapper t : children) {
                 list.addAll(t.getFlattenedList());
             }
             list.add(node); // add a delimiter empty object
         }
         return list;
     }
+
     public DumpTarget newItemTarget(ItemInfo info) {
         DumpTarget dt = new DumpTarget();
         dt.type = DumpTarget.Type.ITEM;
@@ -100,7 +101,7 @@ public class DumpTargetWrapper {
     }
 
     public static String getDumpTargetStr(DumpTarget t) {
-        if (t == null){
+        if (t == null) {
             return "";
         }
         switch (t.type) {
@@ -111,7 +112,7 @@ public class DumpTargetWrapper {
                 if (t.containerType == ContainerType.WORKSPACE) {
                     str += " id=" + t.pageId;
                 } else if (t.containerType == ContainerType.FOLDER) {
-                    str += " grid(" + t.gridX + "," + t.gridY+ ")";
+                    str += " grid(" + t.gridX + "," + t.gridY + ")";
                 }
                 return str;
             default:
@@ -132,9 +133,9 @@ public class DumpTargetWrapper {
     }
 
     public DumpTarget writeToDumpTarget(ItemInfo info) {
-        node.component = info.getTargetComponent() == null? "":
+        node.component = info.getTargetComponent() == null ? "" :
                 info.getTargetComponent().flattenToString();
-        node.packageName = info.getTargetComponent() == null? "":
+        node.packageName = info.getTargetComponent() == null ? "" :
                 info.getTargetComponent().getPackageName();
         if (info instanceof LauncherAppWidgetInfo) {
             node.component = ((LauncherAppWidgetInfo) info).providerName.flattenToString();
@@ -145,7 +146,7 @@ public class DumpTargetWrapper {
         node.gridY = info.cellY;
         node.spanX = info.spanX;
         node.spanY = info.spanY;
-        node.userType = (info.user.equals(Process.myUserHandle()))? UserType.DEFAULT : UserType.WORK;
+        node.userType = (info.user.equals(Process.myUserHandle())) ? UserType.DEFAULT : UserType.WORK;
         return node;
     }
 }
