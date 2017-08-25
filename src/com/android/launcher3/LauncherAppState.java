@@ -61,7 +61,7 @@ public class LauncherAppState {
                             return LauncherAppState.getInstance(context);
                         }
                     }).get();
-                } catch (InterruptedException|ExecutionException e) {
+                } catch (InterruptedException | ExecutionException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -161,9 +161,17 @@ public class LauncherAppState {
     }
 
     private static LauncherProvider getLocalProvider(Context context) {
-        try (ContentProviderClient cl = context.getContentResolver()
-                .acquireContentProviderClient(LauncherProvider.AUTHORITY)) {
+        ContentProviderClient cl = null;
+        try {
+            cl = context.getContentResolver()
+                    .acquireContentProviderClient(LauncherProvider.AUTHORITY);
             return (LauncherProvider) cl.getLocalContentProvider();
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (cl != null) {
+                cl.release();
+            }
         }
     }
 }
